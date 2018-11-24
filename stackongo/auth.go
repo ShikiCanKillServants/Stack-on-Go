@@ -3,7 +3,6 @@ package stackongo
 import (
 	"errors"
 	"io/ioutil"
-	"net/http"
 	"net/url"
 )
 
@@ -13,7 +12,7 @@ type authError struct {
 
 var auth_url string = "https://stackexchange.com/oauth/access_token"
 
-// AuthURL returns the URL to redirect the user for authentication 
+// AuthURL returns the URL to redirect the user for authentication
 // It accepts the following arguments
 // client_id - Your App's registered ID
 // redirect_uri - URI to redirect after authentication
@@ -35,7 +34,7 @@ func AuthURL(client_id, redirect_uri string, options map[string]string) (output 
 }
 
 func ObtainAccessToken(client_id, client_secret, code, redirect_uri string) (output map[string]string, error error) {
-	client := &http.Client{Transport: getTransport()}
+	client := myHTTPClient
 
 	parsed_auth_url, _ := url.Parse(auth_url)
 	auth_query := parsed_auth_url.Query()
@@ -58,7 +57,7 @@ func ObtainAccessToken(client_id, client_secret, code, redirect_uri string) (out
 
 		error = errors.New(collection.Error["type"] + ": " + collection.Error["message"])
 	} else {
-		// if not process the output 
+		// if not process the output
 		bytes, err2 := ioutil.ReadAll(response.Body)
 
 		if err2 != nil {

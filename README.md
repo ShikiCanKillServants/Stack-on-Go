@@ -27,6 +27,12 @@ By default, package will be named as `stackongo`. If you want, you can give an a
 Stack Exchange API contains global and site specific methods. Global methods can be directly called like this:
 
 ```go
+   stackongo.SetHttpClient(&http.Client)
+```
+Before being able to call any of the following functions you need to provide an http client
+
+
+```go
   sites, err := stackongo.AllSites(params)
 ```
 

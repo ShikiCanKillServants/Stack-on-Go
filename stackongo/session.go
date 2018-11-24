@@ -10,7 +10,7 @@ import (
 )
 
 var host string = "http://api.stackexchange.com"
-var transport http.RoundTripper
+var myHTTPClient http.Client
 
 // UseSecure set to communicate using SSL
 var UseSSL bool = true
@@ -19,19 +19,12 @@ type Session struct {
 	Site string
 }
 
+func SetHTTPClient(c http.Client) {
+	myHTTPClient = c
+}
+
 func NewSession(site string) *Session {
 	return &Session{Site: site}
-}
-
-func getTransport() http.RoundTripper {
-	if transport != nil {
-		return transport
-	}
-	return http.DefaultTransport
-}
-
-func SetTransport(t http.RoundTripper) {
-	transport = t
 }
 
 // construct the endpoint URL
@@ -91,7 +84,7 @@ func (session Session) get(section string, params map[string]string, collection 
 }
 
 func get(section string, params map[string]string, collection interface{}) (error error) {
-	client := &http.Client{Transport: getTransport()}
+	client := myHTTPClient
 
 	response, error := client.Get(setupEndpoint(section, params).String())
 
